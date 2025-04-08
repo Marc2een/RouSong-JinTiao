@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>智能宠物喂食计算器</title>
+    <title>狗狗每日能量摄入计算器|金陵土松教拾缘长老提供</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
@@ -54,7 +54,7 @@
         /* 输入模式切换 */
         .mode-toggle {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(3, 1fr);
             gap: 1rem;
             margin: 1.5rem 0;
         }
@@ -133,21 +133,49 @@
             margin-top: 1rem;
         }
 
-        /* 响应式设计 */
-        @media (max-width: 600px) {
-            .container {
-                padding: 1rem;
-            }
-            .mode-toggle {
-                grid-template-columns: 1fr;
-            }
-            .input-grid {
-                grid-template-columns: 1fr;
-            }
-            .calculator-card {
-                padding: 1.2rem;
-            }
-        }
+
+				@media (max-width: 480px) {
+				    /* 重置容器间距 */
+				    .container {
+				        padding: 0;
+				        max-width: 100vw;
+				        overflow-x: hidden;
+				    }
+
+				    /* 卡片宽度适配 */
+				    .calculator-card {
+				        border-radius: 0;
+				        margin: 0 0 1rem;
+				        padding: 1.2rem;
+				        width: 100vw;
+				        box-shadow: none;
+				    }
+
+				    /* 输入项全宽适配 */
+				    .input-grid {
+				        grid-template-columns: 1fr;
+				        gap: 0.8rem;
+				    }
+
+				    .styled-input {
+				        max-width: 100%;
+				        width: calc(100% - 2rem);
+				        margin: 0 auto;
+				    }
+
+				    /* 按钮宽度微调 */
+				    .calculate-btn {
+				        width: calc(100% - 2rem);
+				        margin: 0.8rem auto;
+				    }
+
+				    /* 修复iOS横屏滚动 */
+				    @media (orientation: landscape) {
+				        body {
+				            overflow-y: auto;
+				        }
+				    }
+				}
     </style>
 </head>
 <body>
@@ -157,31 +185,48 @@
             <h2><i class="fas fa-bone"></i> 狗粮/猫粮热量计算</h2>
             
             <div class="mode-toggle">
+            		<button class="mode-btn" onclick="switchMode('brand')">品牌查询</button>
                 <button class="mode-btn active" onclick="switchMode('composition')">成分计算</button>
                 <button class="mode-btn" onclick="switchMode('direct')">直接输入</button>
             </div>
+
+            <!-- 品牌查询 -->
+				    <div id="brand-form" style="display: none;">
+				        <div class="input-grid">
+				            <div class="input-group">
+				                <label>选择品牌</label>
+				                <select class="styled-input" id="brand-select">
+				                    <option value="">请选择品牌</option>
+				                    <option value="royal-canin">皇家成犬粮 320kcal/100g</option>
+				                    <option value="hills">希尔斯减肥粮 280kcal/100g</option>
+				                    <option value="orijen">渴望六种鱼 375kcal/100g</option>
+				                    <option value="acana">爱肯拿农场盛宴 360kcal/100g</option>
+				                </select>
+				            </div>
+				        </div>
+				    </div>
 
             <!-- 成分输入 -->
             <div id="composition-form">
                 <div class="input-grid">
                     <div class="input-group">
-                        <label>粗蛋白质 (%)</label>
+                        <label>粗蛋白质含量 (%)</label>
                         <input type="number" class="styled-input" id="protein" placeholder="请输入数字，如：50" step="0.1">
                     </div>
                     <div class="input-group">
-                        <label>粗脂肪 (%)</label>
+                        <label>粗脂肪含量 (%)</label>
                         <input type="number" class="styled-input" id="fat" placeholder="请输入数字，如：20" step="0.1">
                     </div>
                     <div class="input-group">
-                        <label>粗纤维 (%)</label>
+                        <label>粗纤维含量 (%)</label>
                         <input type="number" class="styled-input" id="fiber" placeholder="请输入数字，如：5" step="0.1">
                     </div>
                     <div class="input-group">
-                        <label>水分 (%)</label>
+                        <label>水分含量 (%)</label>
                         <input type="number" class="styled-input" id="moisture" placeholder="请输入数字，如：10" step="0.1">
                     </div>
                     <div class="input-group">
-                        <label>粗灰分 (%)</label>
+                        <label>粗灰分含量 (%)</label>
                         <input type="number" class="styled-input" id="ash" placeholder="请输入数字，如：5" step="0.1">
                     </div>
                 </div>
@@ -196,8 +241,9 @@
                     </div>
                 </div>
             </div>
-
+    				<p>* 营养成分表可在狗粮/猫粮外包装上获取</p>
             <button class="calculate-btn" onclick="calculateEnergy()">计算热量</button>
+    <div style="border-top: 1px solid #eee; margin: 1.5rem 0;"></div>
         </div>
 
         <!-- 宠物信息模块 -->
@@ -243,7 +289,7 @@
         
         <!-- 在结果展示div之后添加 -->
 <div class="calculator-card" style="margin-top: 2rem; font-size: 0.8em; color: #666; line-height: 1.6;">
-    <p>保持狗狗健康状态是每位宠物主人的首要责任，这不仅关系到爱宠的生活质量，更是延长它们寿命的关键。科学管理犬只的能量收支平衡（即摄入与消耗的热量平衡）是达成这一目标的核心。本网页由金陵土松教拾缘长老提供，旨在为您的爱犬提供的科学的能量摄入指导。</p>
+    <p>保持狗狗健康状态是每位宠物主人的首要责任，这不仅关系到爱宠的生活质量，更是延长它们寿命的关键。科学管理犬只的能量收支平衡（即摄入与消耗的热量平衡）是达成这一目标的核心。本网页由金陵土松教拾缘长老提供，旨在为您的爱犬提供科学的能量摄入指导。</p>
     
     <div style="border-top: 1px solid #eee; margin: 1.5rem 0;"></div>
 
@@ -267,7 +313,7 @@
     <h5 style="margin: 0.8rem 0;">2.3 生理状态</h5>
     <p>犬只绝育后能量代谢水平呈现下降趋势，主要归因于性激素对机体代谢的调节作用。性腺激素不仅参与肌肉蛋白合成的生理过程，同时影响着动物的运动活性水平。与之形成对比的是繁殖期雌性动物，其营养需求呈现阶段性激增，需要额外能量摄入以满足自身代谢维持和子代生长发育的双重需求。</p>
 
-    <h5 style="margin: 0.8rem 0;">2.5 个体差异</h5>
+    <h5 style="margin: 0.8rem 0;">2.4 个体差异</h5>
     <p>同样重要的是不要忽视个体狗之间，甚至同一只小狗在一段时间内的差异。由于生理差异，有些狗的代谢率比其他狗更高，燃烧的卡路里也更多。某些疾病也会影响热量需求。例如，甲状腺功能异常等疾病可导致代谢率波动30%以上。</p>
 
     <div style="border-top: 1px solid #eee; margin: 1.5rem 0;"></div>
@@ -289,12 +335,12 @@
             <tr><td>已绝育成年犬</td><td>1.6</td></tr>
             <tr><td>未绝育成年犬</td><td>1.8</td></tr>
             <tr><td>减肥期成年犬</td><td>1.0</td></tr>
-            <tr><td>增肌期成年犬</td><td>1.0</td></tr>
-            <tr><td>轻度运动</td><td>1.0</td></tr>
-            <tr><td>中度运动</td><td>1.0</td></tr>
-            <tr><td>剧烈运动</td><td>1.0</td></tr>
-            <tr><td>未成年，4月龄以下</td><td>1.0</td></tr>
-            <tr><td>未成年，4月龄以上</td><td>1.0</td></tr>
+            <tr><td>增肌期成年犬</td><td>1.7</td></tr>
+            <tr><td>轻度运动</td><td>2.0</td></tr>
+            <tr><td>中度运动</td><td>3.0</td></tr>
+            <tr><td>剧烈运动</td><td>6.0</td></tr>
+            <tr><td>未成年，4月龄以下</td><td>3.0</td></tr>
+            <tr><td>未成年，4月龄以上</td><td>2.0</td></tr>
         </table>
     </div>
 
@@ -312,9 +358,9 @@
 
     <script>
         let calculationData = {
-            energy: null,
-            weight: null,
-            multiplier: null
+            energy: 0,
+            weight: 0,
+            multiplier: 0
         };
 
         const multipliers = {
@@ -360,37 +406,60 @@
             container.style.display = select.value === "custom" ? "block" : "none";
         }
 
+				const brandDatabase = {
+				    "royal-canin": 320,
+				    "hills": 280,
+				    "orijen": 375,
+				    "acana": 360
+				};
+
         function switchMode(mode) {
             document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
             
+            document.getElementById('brand-form').style.display = 
+        				mode === 'brand' ? 'block' : 'none';
             document.getElementById('composition-form').style.display = 
                 mode === 'composition' ? 'block' : 'none';
             document.getElementById('direct-form').style.display = 
                 mode === 'direct' ? 'block' : 'none';
         }
 
-        function calculateEnergy() {
-            let energy;
-            const isDirectMode = document.querySelector('.mode-btn.active').textContent.includes('直接');
+				 function calculateEnergy() {
+				    const activeMode = document.querySelector('.mode-btn.active').textContent;
+				    let energy;
 
-            if (isDirectMode) {
-                energy = parseFloat(document.getElementById('direct-energy').value);
-                if (!energy || energy <= 0) return showError("请输入有效热量值");
-            } else {
-                const inputs = ['protein', 'fat', 'fiber', 'moisture', 'ash']
-                    .map(id => parseFloat(document.getElementById(id).value) || 0);
+				    // 模式判断优先级：品牌查询 > 直接输入 > 成分计算
+				    if (activeMode.includes('品牌')) {
+				        const brand = document.getElementById('brand-select').value;
+				        if (!brand) return showError("请选择狗粮品牌");
+				        
+				        // 从预加载的数据库获取热量值
+				        energy = brandDatabase[brand];
+				        if (!energy) return showError("该品牌数据暂未收录");
+				        
+				    } else if (activeMode.includes('直接')) {
+				        energy = parseFloat(document.getElementById('direct-energy').value);
+				        if (!energy || energy <= 0) return showError("请输入有效热量值");
+				        
+				    } else { // 成分计算模式
+				        const inputs = ['protein', 'fat', 'fiber', 'moisture', 'ash']
+				            .map(id => parseFloat(document.getElementById(id).value) || 0);
 
-                if (inputs.some(v => v < 0)) return showError("成分不能为负");
-                if (inputs.reduce((a,b) => a + b, 0) > 100) return showError("成分总和超过100%");
+				        // 数据验证
+				        if (inputs.some(v => v < 0)) return showError("成分不能为负");
+				        const total = inputs.reduce((a, b) => a + b, 0);
+				        if (total > 100) return showError("成分总和超过100%");
 
-                const carbs = 100 - inputs.reduce((a,b) => a + b, 0);
-                energy = (carbs * 4) + (inputs[0] * 4) + (inputs[1] * 9);
-            }
+				        // 计算公式
+				        const carbs = 100 - total;
+				        energy = (carbs * 4) + (inputs[0] * 4) + (inputs[1] * 9);
+				    }
 
-            calculationData.energy = energy;
-            showResult(`热量值：<span class="highlight">${energy.toFixed(1)} kcal/100g</span>`);
-        }
+				    // 统一处理结果存储和显示
+				    calculationData.energy = energy;
+				    showResult(`热量值：<span class="highlight">${energy.toFixed(1)} kcal/100g</span>`);
+				}
 
         function calculateFeeding() {
             if (!calculationData.energy) return showError("请先计算热量值");
@@ -418,21 +487,24 @@
             `);
         }
 
-        function showResult(html) {
-            document.getElementById('result-content').innerHTML = html;
-            window.scrollTo({
-                top: document.body.scrollHeight,
-                behavior: 'smooth'
-            });
-        }
+				function showResult(html) {
+				    const resultContainer = document.getElementById('result-content');
+				    resultContainer.innerHTML = html;
+				    resultContainer.scrollIntoView({
+				        behavior: 'smooth',
+				        block: 'end',    // 对齐到视口顶部
+				        inline: 'nearest'
+				    });
+				}
 
-        function showError(msg) {
-            document.getElementById('result-content').innerHTML = `
-                <div style="color:#d32f2f; background:#ffebee; padding:1rem; border-radius:8px;">
-                    ⚠️ ${msg}
-                </div>
-            `;
-        }
+				function showError(msg) {
+				    const resultDiv = document.getElementById('result-content');
+				    resultDiv.innerHTML = `...`;
+				    resultDiv.scrollIntoView({ 
+				        behavior: 'smooth',
+				        block: 'end'
+				    });
+				}
 
         init();
     </script>
