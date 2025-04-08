@@ -3,208 +3,314 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>宠物喂食助手 | 专业计算器</title>
+    <title>智能宠物喂食计算器</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --primary: #A8C3CE;
-            --secondary: #C8E2D9;
-            --accent: #E8D1D1;
-            --background: #F9FCFD;
-            --text: #6A7A88;
+            --primary: #7CA4B5;    /* 柔和蓝灰 */
+            --secondary: #A8D0C5;  /* 薄荷绿 */
+            --accent: #D9B3B3;     /* 玫瑰粉 */
+            --background: #F8FAFB;
+            --text: #4E5D6C;
         }
 
         body {
             font-family: 'Helvetica Neue', 'PingFang SC', sans-serif;
             background: var(--background);
             color: var(--text);
-            min-height: 100vh;
-            padding: 2rem 1rem;
-            position: relative;
-            overflow-x: hidden;
+            line-height: 1.6;
+            padding: 1.5rem;
         }
-
-        .pet-deco {
-            position: absolute;
-            opacity: 0.1;
-            pointer-events: none;
-            z-index: 0;
-        }
-        .paw-left { left: -30px; top: 20%; transform: rotate(15deg); }
-        .paw-right { right: -30px; bottom: 25%; transform: rotate(-15deg); }
-        .dog-face { left: -50px; top: 45%; width: 120px; }
-        .leash { right: -80px; bottom: 15%; width: 180px; }
 
         .container {
-            max-width: 800px;
+            max-width: 760px;
             margin: 0 auto;
             position: relative;
-            z-index: 1;
         }
 
+        /* 卡片设计 */
         .calculator-card {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 16px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+            background: white;
+            border-radius: 12px;
+            padding: 1.8rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+            transition: transform 0.2s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        .mode-toggle {
-            display: flex;
-            gap: 1rem;
-            margin: 2rem 0;
+        .calculator-card::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -30px;
+            width: 120px;
+            height: 120px;
+            background: rgba(168,208,197,0.1);
+            border-radius: 50%;
         }
+
+        /* 输入模式切换 */
+        .mode-toggle {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
         .mode-btn {
-            flex: 1;
-            padding: 1rem;
+            padding: 0.8rem;
             border: 2px solid var(--primary);
-            border-radius: 12px;
-            background: rgba(255,255,255,0.9);
+            border-radius: 8px;
+            background: white;
             cursor: pointer;
             transition: all 0.3s ease;
-            text-align: center;
+            position: relative;
         }
+
         .mode-btn.active {
             background: var(--primary);
             color: white;
         }
 
-        .input-group {
+        /* 输入网格布局 */
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.2rem;
             margin: 1.5rem 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .styled-input {
-            width: 66.66%;
-            max-width: 300px;
-            padding: 0.8rem;
-            border: 2px solid var(--primary);
-            border-radius: 8px;
-            font-size: 1rem;
-            background: rgba(255,255,255,0.9);
-            transition: all 0.3s ease;
-        }
-        .styled-input:focus {
-            box-shadow: 0 0 0 3px rgba(168,195,206,0.3);
-            outline: none;
-        }
-        ::placeholder {
-            color: #9CA8B5;
-            font-style: italic;
         }
 
-        .result-card {
-            background: white;
-            border-radius: 16px;
-            padding: 2rem;
-            margin-top: 2rem;
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
         }
+
+        .styled-input {
+            width: 80%;
+            padding: 0.8rem 1rem;
+            border: 1.5px solid #D8E1E8;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            background: rgba(255,255,255,0.95);
+        }
+
+        .styled-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(124,164,181,0.15);
+            outline: none;
+        }
+
+        /* 结果展示 */
+        .result-card {
+            background: rgba(248,250,251,0.9);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+        }
+
         .highlight {
             color: var(--primary);
+            font-size: 1.3rem;
             font-weight: 600;
-            font-size: 1.4rem;
+            margin: 0.5rem 0;
+        }
+
+        /* 按钮样式 */
+        .calculate-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            margin-top: 1rem;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 600px) {
+            .container {
+                padding: 1rem;
+            }
+            .mode-toggle {
+                grid-template-columns: 1fr;
+            }
+            .input-grid {
+                grid-template-columns: 1fr;
+            }
+            .calculator-card {
+                padding: 1.2rem;
+            }
         }
     </style>
 </head>
 <body>
-    <i class="pet-deco paw-left fas fa-paw fa-3x"></i>
-    <i class="pet-deco paw-right fas fa-paw fa-3x"></i>
-    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMjAgMTBjMC00LjQxOC0zLjU4Mi04LTgtOHMtOCAzLjU4Mi04IDhjMCAzLjAyNSAxLjcwNSA1LjY2OCA0LjI4IDcuMDdMMTIgMjJsMy43Mi00LjkzQzE4LjI5NSAxNS42NjggMjAgMTMuMDI1IDIwIDEweiIgZmlsbD0iI0E4QzNDRSIvPjwvc3ZnPg==" 
-         class="pet-deco dog-face" alt="狗头">
-    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTkgM0g1Yy0xLjEgMC0yIC45LTIgMnYxNGMwIDEuMS45IDIgMiAyaDE0YzEuMSAwIDItLjkgMi0yVjVjMC0xLjEtLjktMi0yLTJ6bS03IDEyaC0ydi0ySDd2LTJoM3YzaDJ2LTNoM3YtMmgtM3YtMmgtMnYyaC0ydi0yaC00djRoNHYtMmgydjJ6IiBmaWxsPSIjQThDM0NFIi8+PC9zdmc+" 
-         class="pet-deco leash" alt="牵狗绳">
-
     <div class="container">
+        <!-- 热量计算模块 -->
         <div class="calculator-card">
-            <h2>🐶 狗粮/猫粮热量计算 🐱</h2>
+            <h2><i class="fas fa-bone"></i> 狗粮/猫粮热量计算</h2>
             
             <div class="mode-toggle">
-                <button class="mode-btn active" onclick="switchMode('composition')">
-                    <i class="fas fa-calculator"></i><br>成分计算
-                </button>
-                <button class="mode-btn" onclick="switchMode('direct')">
-                    <i class="fas fa-keyboard"></i><br>直接输入
-                </button>
+                <button class="mode-btn active" onclick="switchMode('composition')">成分计算</button>
+                <button class="mode-btn" onclick="switchMode('direct')">直接输入</button>
             </div>
 
+            <!-- 成分输入 -->
             <div id="composition-form">
-                <div class="input-group">
-                    <input type="number" class="styled-input" id="protein" 
-                           placeholder="粗蛋白质含量（%）" step="0.1">
-                </div>
-                <div class="input-group">
-                    <input type="number" class="styled-input" id="fat" 
-                           placeholder="粗脂肪含量（%）" step="0.1">
-                </div>
-                <div class="input-group">
-                    <input type="number" class="styled-input" id="fiber" 
-                           placeholder="粗纤维含量（%）" step="0.1">
-                </div>
-                <div class="input-group">
-                    <input type="number" class="styled-input" id="moisture" 
-                           placeholder="水分含量（%）" step="0.1">
-                </div>
-                <div class="input-group">
-                    <input type="number" class="styled-input" id="ash" 
-                           placeholder="粗灰分含量（%）" step="0.1">
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label>粗蛋白质 (%)</label>
+                        <input type="number" class="styled-input" id="protein" placeholder="请输入数字，如：50" step="0.1">
+                    </div>
+                    <div class="input-group">
+                        <label>粗脂肪 (%)</label>
+                        <input type="number" class="styled-input" id="fat" placeholder="请输入数字，如：20" step="0.1">
+                    </div>
+                    <div class="input-group">
+                        <label>粗纤维 (%)</label>
+                        <input type="number" class="styled-input" id="fiber" placeholder="请输入数字，如：5" step="0.1">
+                    </div>
+                    <div class="input-group">
+                        <label>水分 (%)</label>
+                        <input type="number" class="styled-input" id="moisture" placeholder="请输入数字，如：10" step="0.1">
+                    </div>
+                    <div class="input-group">
+                        <label>粗灰分 (%)</label>
+                        <input type="number" class="styled-input" id="ash" placeholder="请输入数字，如：5" step="0.1">
+                    </div>
                 </div>
             </div>
 
+            <!-- 直接输入 -->
             <div id="direct-form" style="display: none;">
-                <div class="input-group">
-                    <input type="number" class="styled-input" id="direct-energy" 
-                           placeholder="直接输入热量值（kcal/100g）" step="1">
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label>热量值 (kcal/100g)</label>
+                        <input type="number" class="styled-input" id="direct-energy" placeholder="350" step="1">
+                    </div>
                 </div>
             </div>
 
-            <button class="mode-btn" onclick="calculateEnergy()" style="margin-top: 2rem;">
-                <i class="fas fa-paw"></i> 计算热量
-            </button>
+            <button class="calculate-btn" onclick="calculateEnergy()">计算热量</button>
         </div>
 
+        <!-- 宠物信息模块 -->
         <div class="calculator-card">
-            <h2>🐾 宠物信息</h2>
+            <h2><i class="fas fa-paw"></i> 宠物信息</h2>
             
-            <div class="input-group">
-                <select class="styled-input" id="pet-type">
-                    <option value="dog">🐶 狗狗</option>
-                    <option value="cat">🐱 猫咪</option>
-                </select>
-            </div>
-            
-            <div class="input-group">
-                <input type="number" class="styled-input" id="weight" 
-                       placeholder="体重（kg）" step="0.1" min="0.1">
-            </div>
-
-            <div class="input-group">
-                <select class="styled-input" id="multiplier" onchange="toggleCustomMultiplier()">
-                    <!-- 动态加载选项 -->
-                </select>
-            </div>
-
-            <div id="custom-multiplier-container" style="display: none;">
+            <div class="input-grid">
                 <div class="input-group">
-                    <input type="number" class="styled-input" id="custom-multiplier" 
-                           placeholder="输入自定义系数（0.5-10）" step="0.1">
+                    <label>宠物类型</label>
+                    <select class="styled-input" id="pet-type">
+                        <option value="dog">狗狗</option>
+                        <option value="cat">猫咪</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label>体重 (kg)</label>
+                    <input type="number" class="styled-input" id="weight" placeholder="请输入数字，如：4.5" step="0.1">
+                </div>
+                
+                <div class="input-group">
+                    <label>活动系数</label>
+                    <select class="styled-input" id="multiplier" onchange="toggleCustomMultiplier()"></select>
+                </div>
+                
+                <div id="custom-multiplier-container" style="display: none;">
+                    <div class="input-group">
+                        <label>自定义系数</label>
+                        <input type="number" class="styled-input" id="custom-multiplier" 
+                               placeholder="0.5-10" step="0.1">
+                    </div>
                 </div>
             </div>
 
-            <button class="mode-btn" onclick="calculateFeeding()" style="margin-top: 2rem;">
-                <i class="fas fa-bowl-food"></i> 计算喂食量
-            </button>
+            <button class="calculate-btn" onclick="calculateFeeding()">计算喂食量</button>
         </div>
 
+        <!-- 结果展示 -->
         <div class="calculator-card result-card">
-            <h2>📊 计算结果</h2>
+            <h2><i class="fas fa-chart-line"></i> 计算结果</h2>
             <div id="result-content"></div>
         </div>
+        
+        <!-- 在结果展示div之后添加 -->
+<div class="calculator-card" style="margin-top: 2rem; font-size: 0.8em; color: #666; line-height: 1.6;">
+    <p>保持狗狗健康状态是每位宠物主人的首要责任，这不仅关系到爱宠的生活质量，更是延长它们寿命的关键。科学管理犬只的能量收支平衡（即摄入与消耗的热量平衡）是达成这一目标的核心。本网页由金陵土松教拾缘长老提供，旨在为您的爱犬提供的科学的能量摄入指导。</p>
+    
+    <div style="border-top: 1px solid #eee; margin: 1.5rem 0;"></div>
+
+    <h4 style="color: var(--primary); margin: 1rem 0;">1. 卡路里的本质与重要性</h4>
+    <p>卡路里（calorie，cal）作为衡量食物能量的单位，是维持犬类生命活动的"生物燃料"。这种能量源自三大营养素，即脂肪（9 kcal/g）、蛋白质（4 kcal/g）和碳水化合物（4 kcal/g）。当摄入不足时，机体首先分解脂肪储备，持续短缺会导致肌肉消耗，引发代谢率下降；而长期过量摄入时，多余能量会转化为脂肪堆积，造成肥胖及相关代谢疾病。</p>
+
+    <div style="border-top: 1px solid #eee; margin: 1.5rem 0;"></div>
+
+    <h4 style="color: var(--primary); margin: 1rem 0;">2. 犬类热量需求的影响要素</h4>
+    <h5 style="margin: 0.8rem 0;">2.1 生长阶段差异</h5>
+    <p>犬类在不同生命阶段具有差异化的能量代谢特征。处于快速生长期（特别是4月龄前）的幼犬单位体重能量需求最高，这种高代谢状态随着骨骼发育完成呈渐进性递减，直至达成稳定的成年代谢水平。老龄犬群体因肌肉组织流失等因素，能量需求下降。</p>
+
+    <h5 style="margin: 0.8rem 0;">2.2 体型与活动水平</h5>
+    <p>体重相同的狗狗中，肌肉发达的狗往往需要摄入更多的卡路里，因为肌肉的耗能需求远高于比脂肪。活动水平是决定能量摄入量的另一个重要因素。与活动量较少的狗相比，运动量大的狗可能需要两倍甚至更多的卡路里。</p>
+    <ul style="list-style: none; padding-left: 1.2rem;">
+        <li>• 轻度活动（每日＜30分钟）：维持基础代谢1.2倍</li>
+        <li>• 中度活动（1-2小时训练）：达基础代谢2倍</li>
+        <li>• 工作犬/竞技犬：可达基础代谢6倍</li>
+    </ul>
+
+    <h5 style="margin: 0.8rem 0;">2.3 生理状态</h5>
+    <p>犬只绝育后能量代谢水平呈现下降趋势，主要归因于性激素对机体代谢的调节作用。性腺激素不仅参与肌肉蛋白合成的生理过程，同时影响着动物的运动活性水平。与之形成对比的是繁殖期雌性动物，其营养需求呈现阶段性激增，需要额外能量摄入以满足自身代谢维持和子代生长发育的双重需求。</p>
+
+    <h5 style="margin: 0.8rem 0;">2.5 个体差异</h5>
+    <p>同样重要的是不要忽视个体狗之间，甚至同一只小狗在一段时间内的差异。由于生理差异，有些狗的代谢率比其他狗更高，燃烧的卡路里也更多。某些疾病也会影响热量需求。例如，甲状腺功能异常等疾病可导致代谢率波动30%以上。</p>
+
+    <div style="border-top: 1px solid #eee; margin: 1.5rem 0;"></div>
+
+    <h4 style="color: var(--primary); margin: 1rem 0;">3. 如何计算狗狗的热量需求</h4>
+    <h5 style="margin: 0.8rem 0;">步骤1：计算每日静息能量需求（Resting Energy Requirement, RER）</h5>
+    <p style="background: #f8f9fa; padding: 0.8rem; border-radius: 4px;">
+        公式：<code>RER = 70 × 体重(kg)<sup>0.75</sup></code>
+    </p>
+
+    <h5 style="margin: 0.8rem 0;">步骤2：确定活动系数</h5>
+        <p>参考系数表：</p>
+    <div style="background: #f8f9fa; padding: 0.8rem; border-radius: 4px;">
+        <table style="width: 60%; border-collapse: collapse;">
+            <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 0.4rem;">生理状态</td>
+                <td style="padding: 0.2rem;">系数</td>
+            </tr>
+            <tr><td>已绝育成年犬</td><td>1.6</td></tr>
+            <tr><td>未绝育成年犬</td><td>1.8</td></tr>
+            <tr><td>减肥期成年犬</td><td>1.0</td></tr>
+            <tr><td>增肌期成年犬</td><td>1.0</td></tr>
+            <tr><td>轻度运动</td><td>1.0</td></tr>
+            <tr><td>中度运动</td><td>1.0</td></tr>
+            <tr><td>剧烈运动</td><td>1.0</td></tr>
+            <tr><td>未成年，4月龄以下</td><td>1.0</td></tr>
+            <tr><td>未成年，4月龄以上</td><td>1.0</td></tr>
+        </table>
+    </div>
+
+    <h5 style="margin: 0.8rem 0;">步骤3：计算每日维持能量需求（Maintenance Energy Requirement， MER）</h5>
+    <p style="background: #f8f9fa; padding: 0.8rem; border-radius: 4px;">
+        公式：<code>MER = RER × 活动系数</code>
+    </p>
+    <p>为了解释正常变化，我们在实际计算时创建了一个卡路里需求范围，该范围为MER ± 10％，您可以在此范围内喂食您的爱犬。但如果您的狗存在健康或其他问题，本资源可能无法为您提供有用的信息，请及时与您的兽医讨论爱犬的喂养方式。</p>
+
+    <div style="border-top: 1px solid #eee; margin: 1.5rem 0;"></div>
+    <p style="text-align: right; color: #999;">By Marc2een</p>
+</div>
+        
     </div>
 
     <script>
-        // 全局数据存储
         let calculationData = {
             energy: null,
             weight: null,
@@ -216,7 +322,7 @@
                 {value: 1.6, label: "已绝育（1.6）"},
                 {value: 1.8, label: "未绝育（1.8）"},
                 {value: 1.0, label: "减肥期（1.0）"},
-                {value: 1.7, label: "增重期（1.7）"},
+                {value: 1.7, label: "增肌肉期（1.7）"},
                 {value: 2.0, label: "轻度运动（2.0）"},
                 {value: 3.0, label: "中度运动（3.0）"},
                 {value: 6.0, label: "剧烈运动（6.0）"},
@@ -235,7 +341,6 @@
             ]
         };
 
-        // 初始化
         function init() {
             updateMultiplierOptions();
             document.getElementById('pet-type').addEventListener('change', updateMultiplierOptions);
@@ -271,26 +376,15 @@
 
             if (isDirectMode) {
                 energy = parseFloat(document.getElementById('direct-energy').value);
-                if (!energy || energy <= 0) {
-                    showError("请输入有效的热量值");
-                    return;
-                }
+                if (!energy || energy <= 0) return showError("请输入有效热量值");
             } else {
                 const inputs = ['protein', 'fat', 'fiber', 'moisture', 'ash']
                     .map(id => parseFloat(document.getElementById(id).value) || 0);
 
-                if (inputs.some(v => v < 0)) {
-                    showError("成分不能为负值");
-                    return;
-                }
+                if (inputs.some(v => v < 0)) return showError("成分不能为负");
+                if (inputs.reduce((a,b) => a + b, 0) > 100) return showError("成分总和超过100%");
 
-                const total = inputs.reduce((a, b) => a + b, 0);
-                if (total > 100) {
-                    showError("成分总和不能超过100%");
-                    return;
-                }
-
-                const carbs = 100 - total;
+                const carbs = 100 - inputs.reduce((a,b) => a + b, 0);
                 energy = (carbs * 4) + (inputs[0] * 4) + (inputs[1] * 9);
             }
 
@@ -299,31 +393,20 @@
         }
 
         function calculateFeeding() {
-            if (!calculationData.energy) {
-                showError("请先计算热量值");
-                return;
-            }
-
+            if (!calculationData.energy) return showError("请先计算热量值");
+            
             const weight = parseFloat(document.getElementById('weight').value);
-            if (!weight || weight < 0.1) {
-                showError("请输入有效体重（≥0.1kg）");
-                return;
-            }
+            if (!weight || weight < 0.1) return showError("请输入有效体重");
 
             let multiplier;
             const select = document.getElementById('multiplier');
             if (select.value === "custom") {
                 multiplier = parseFloat(document.getElementById('custom-multiplier').value);
-                if (isNaN(multiplier) || multiplier < 0.5 || multiplier > 10) {
-                    showError("请输入0.5-10之间的系数");
-                    return;
-                }
+                if (isNaN(multiplier) || multiplier < 0.5 || multiplier > 10) 
+                    return showError("请输入0.5-10之间的系数");
             } else {
                 multiplier = parseFloat(select.value);
             }
-
-            calculationData.weight = weight;
-            calculationData.multiplier = multiplier;
 
             const rer = 70 * Math.pow(weight, 0.75);
             const mer = rer * multiplier;
@@ -332,7 +415,6 @@
             showResult(`
                 每日需求：<span class="highlight">${mer.toFixed(1)} kcal</span><br>
                 建议喂食量：<span class="highlight">${(dailyGrams*0.9).toFixed(1)}-${(dailyGrams*1.1).toFixed(1)}g</span>
-                <br><small>（根据活动量±10%调整）</small>
             `);
         }
 
@@ -344,10 +426,10 @@
             });
         }
 
-        function showError(message) {
+        function showError(msg) {
             document.getElementById('result-content').innerHTML = `
-                <div style="color:#d9534f; background:#ffe6e6; padding:1rem; border-radius:8px;">
-                    ⚠️ ${message}
+                <div style="color:#d32f2f; background:#ffebee; padding:1rem; border-radius:8px;">
+                    ⚠️ ${msg}
                 </div>
             `;
         }
