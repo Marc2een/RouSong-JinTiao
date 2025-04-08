@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>宠物热量计算器</title>
+    <style>
+        /* 移动端优化样式 */
+        body { 
+            font-family: Arial, sans-serif;
+            padding: 15px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .input-group { margin-bottom: 15px; }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 12px;
+            border: none;
+            width: 100%;
+            border-radius: 4px;
+        }
+        #result { 
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h2>🐾 宠物热量计算器</h2>
+    
+    <div class="input-group">
+        <label>宠物类型：</label>
+        <select id="animalType" onchange="toggleDogSize()">
+            <option value="cat">猫</option>
+            <option value="dog">狗</option>
+        </select>
+    </div>
+
+    <div class="input-group" id="dogSizeGroup" style="display:none;">
+        <label>犬类体型：</label>
+        <select id="dogSize">
+            <option value="small">小型犬</option>
+            <option value="medium">中型犬</option>
+            <option value="large">大型犬</option>
+        </select>
+    </div>
+
+    <div class="input-group">
+        <label>体重（kg）：</label>
+        <input type="number" id="weight" step="0.1" min="0">
+    </div>
+
+    <div class="input-group">
+        <label>活动量：</label>
+        <select id="activity">
+            <option value="low">低</option>
+            <option value="medium">中</option>
+            <option value="high">高</option>
+        </select>
+    </div>
+
+    <button onclick="calculate()">立即计算</button>
+
+    <div id="result"></div>
+
+    <script>
+        // 显示/隐藏犬类体型选项
+        function toggleDogSize() {
+            const dogGroup = document.getElementById('dogSizeGroup');
+            dogGroup.style.display = document.getElementById('animalType').value === 'dog' ? 'block' : 'none';
+        }
+
+        // 计算逻辑
+        function calculate() {
+            const animalType = document.getElementById('animalType').value;
+            const weight = parseFloat(document.getElementById('weight').value);
+            const activity = document.getElementById('activity').value;
+            
+            let result;
+            if (animalType === 'cat') {
+                const rer = 30 * weight;
+                const activityMap = { low: 1.0, medium: 1.2, high: 1.4 };
+                result = rer * activityMap[activity];
+            } else {
+                const dogSize = document.getElementById('dogSize').value;
+                const sizeMultiplier = {
+                    small: { low: 1.6, medium: 2.0, high: 2.4 },
+                    medium: { low: 1.8, medium: 2.2, high: 2.6 },
+                    large: { low: 2.0, medium: 2.4, high: 2.8 }
+                };
+                const rer = 30 * weight + 70;
+                result = rer * sizeMultiplier[dogSize][activity];
+            }
+
+            document.getElementById('result').innerHTML = `
+                <h3>计算结果</h3>
+                <p>每日所需热量：<strong>${result.toFixed(1)} 千卡</strong></p>
+                <p>建议喂食量：<strong>${(result / 1000).toFixed(2)} 千卡食物</strong></p>
+            `;
+        }
+    </script>
+</body>
+</html>
