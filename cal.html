@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>宠物喂食计算器</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .calculator { background: #f5f5f5; padding: 20px; border-radius: 10px; }
+        .section { margin-bottom: 30px; }
+        h2 { color: #2c3e50; border-bottom: 2px solid #3498db; }
+        input, select { padding: 5px; margin: 5px; width: 200px; }
+        button { background: #3498db; color: white; border: none; padding: 10px 20px; cursor: pointer; }
+        .result { margin-top: 20px; padding: 15px; background: white; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <!-- 狗的计算 -->
+        <div class="section">
+            <h2>狗狗喂食计算</h2>
+            <input type="number" id="dogWeight" placeholder="体重（kg）" step="0.1">
+            <select id="dogMultiplier">
+                <option value="1.6">已绝育</option>
+                <option value="1.8">未绝育</option>
+                <option value="1">需要减肥</option>
+                <option value="1.7">需要增重</option>
+                <option value="2">轻度运动</option>
+                <option value="3">中度运动</option>
+                <option value="6">重度运动</option>
+                <option value="3">幼犬（<4月）</option>
+                <option value="2">幼犬（>4月）</option>
+            </select>
+            <button onclick="calculateDog()">计算</button>
+        </div>
+
+        <!-- 猫的计算 -->
+        <div class="section">
+            <h2>猫咪喂食计算</h2>
+            <input type="number" id="catWeight" placeholder="体重（kg）" step="0.1">
+            <select id="catMultiplier">
+                <option value="1.2">已绝育</option>
+                <option value="1.4">未绝育</option>
+                <option value="1">微胖倾向</option>
+                <option value="0.8">努力减肥</option>
+                <option value="1.6">好动猫</option>
+                <option value="1.3">增胖猫</option>
+            </select>
+            <button onclick="calculateCat()">计算</button>
+        </div>
+
+        <!-- 食物热量计算 -->
+        <div class="section">
+            <h2>食物热量计算</h2>
+            <input type="number" id="protein" placeholder="粗蛋白质含量（%）" step="0.1">
+            <input type="number" id="fat" placeholder="粗脂肪含量（%）" step="0.1">
+            <input type="number" id="fiber" placeholder="粗纤维含量（%）" step="0.1">
+            <input type="number" id="moisture" placeholder="水分含量（%）" step="0.1">
+            <input type="number" id="ash" placeholder="粗灰分含量（%）" step="0.1">
+            <button onclick="calculateFood()">计算</button>
+        </div>
+
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        // 通用RER计算
+        function calculateRER(weight) {
+            return 70 * Math.pow(weight, 0.75);
+        }
+
+        // 狗的计算
+        function calculateDog() {
+            const weight = parseFloat(document.getElementById('dogWeight').value);
+            const multiplier = parseFloat(document.getElementById('dogMultiplier').value);
+            
+            const rer = calculateRER(weight);
+            const mer = rer * multiplier;
+            
+            showResult(mer, '狗');
+        }
+
+        // 猫的计算
+        function calculateCat() {
+            const weight = parseFloat(document.getElementById('catWeight').value);
+            const multiplier = parseFloat(document.getElementById('catMultiplier').value);
+            
+            const rer = calculateRER(weight);
+            const mer = rer * multiplier;
+            
+            showResult(mer, '猫');
+        }
+
+        // 食物热量计算
+        function calculateFood() {
+            const protein = parseFloat(document.getElementById('protein').value);
+            const fat = parseFloat(document.getElementById('fat').value);
+            const fiber = parseFloat(document.getElementById('fiber').value);
+            const moisture = parseFloat(document.getElementById('moisture').value);
+            const ash = parseFloat(document.getElementById('ash').value);
+            
+            const carbs = 100 - protein - fat - fiber - moisture - ash;
+            const energy = (carbs + protein) * 4 + fat * 9;
+            
+            document.getElementById('result').innerHTML = `食物热量：${energy.toFixed(1)} kcal/100g`;
+        }
+
+        // 显示最终结果
+        function showResult(mer, petType) {
+            const energy = parseFloat(prompt(`请输入${petType}粮的热量（kcal/100g）:`));
+            
+            if (energy && energy > 0) {
+                const baseAmount = (mer / energy) * 100; // 转换为克数
+                const range = {
+                    min: (baseAmount * 0.9).toFixed(1),
+                    max: (baseAmount * 1.1).toFixed(1)
+                };
+                
+                document.getElementById('result').innerHTML = 
+                    `MER：${mer.toFixed(1)} kcal/天<br>
+                    建议每日喂食量：${range.min}g - ${range.max}g`;
+            }
+        }
+    </script>
+</body>
+</html>
